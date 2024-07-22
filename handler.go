@@ -218,13 +218,13 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 			}
 
 			if rep == nil {
-				buf.WriteString(ansiGray + "src=" + ansiReset)
+				buf.WriteString(ansiGray + "src=")
 				h.appendSource(buf, src)
-				buf.WriteByte(' ')
+				buf.WriteString(ansiReset + " ")
 			} else if a := rep(nil /* groups */, slog.Any(slog.SourceKey, src)); a.Key != "" {
-				buf.WriteString(ansiGray + "src=" + ansiReset)
+				buf.WriteString(ansiGray + "src=")
 				h.appendValue(buf, a.Value, false)
-				buf.WriteByte(' ')
+				buf.WriteString(ansiReset + " ")
 			}
 		}
 	}
