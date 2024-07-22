@@ -196,6 +196,15 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 		buf.WriteByte(' ')
 	}
 
+	// write message
+	if rep == nil {
+		buf.WriteString(r.Message)
+		buf.WriteByte(' ')
+	} else if a := rep(nil /* groups */, slog.String(slog.MessageKey, r.Message)); a.Key != "" {
+		h.appendValue(buf, a.Value, false)
+		buf.WriteByte(' ')
+	}
+
 	// write source
 	if h.addSource {
 		fs := runtime.CallersFrames([]uintptr{r.PC})
@@ -208,22 +217,15 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 			}
 
 			if rep == nil {
+				buf.WriteString(ansiFaint + "src=" + ansiReset)
 				h.appendSource(buf, src)
 				buf.WriteByte(' ')
 			} else if a := rep(nil /* groups */, slog.Any(slog.SourceKey, src)); a.Key != "" {
+				buf.WriteString(ansiFaint + "src=" + ansiReset)
 				h.appendValue(buf, a.Value, false)
 				buf.WriteByte(' ')
 			}
 		}
-	}
-
-	// write message
-	if rep == nil {
-		buf.WriteString(r.Message)
-		buf.WriteByte(' ')
-	} else if a := rep(nil /* groups */, slog.String(slog.MessageKey, r.Message)); a.Key != "" {
-		h.appendValue(buf, a.Value, false)
-		buf.WriteByte(' ')
 	}
 
 	// write handler attributes
