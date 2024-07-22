@@ -68,6 +68,7 @@ import (
 
 // ANSI modes
 const (
+	ansiGray 	   = "\033[90m"
 	ansiReset          = "\033[0m"
 	ansiFaint          = "\033[2m"
 	ansiResetFaint     = "\033[22m"
@@ -217,11 +218,11 @@ func (h *handler) Handle(_ context.Context, r slog.Record) error {
 			}
 
 			if rep == nil {
-				buf.WriteString(ansiFaint + "src=" + ansiReset)
+				buf.WriteString(ansiGray + "src=" + ansiReset)
 				h.appendSource(buf, src)
 				buf.WriteByte(' ')
 			} else if a := rep(nil /* groups */, slog.Any(slog.SourceKey, src)); a.Key != "" {
-				buf.WriteString(ansiFaint + "src=" + ansiReset)
+				buf.WriteString(ansiGray + "src=" + ansiReset)
 				h.appendValue(buf, a.Value, false)
 				buf.WriteByte(' ')
 			}
